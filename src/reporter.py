@@ -53,7 +53,7 @@ class MarkdownReporter:
         lookback = stats.get("lookback_days", 7)
 
         lines = []
-        lines.append(f"# Kubernetes Ecosystem — Weekly Release Report")
+        lines.append(f"# Kubernetes Ecosystem — Weekly Releases by Vendor")
         lines.append(f"**Report Period:** Last {lookback} days (generated {now})")
         lines.append("")
 
@@ -89,7 +89,7 @@ class MarkdownReporter:
         breaking = [r for r in releases if r.get("has_breaking_changes")]
         total = len(releases)
 
-        lines.append("## Quick Summary")
+        lines.append("## Weekly Release Summary by Vendor")
         lines.append("")
 
         if breaking:
@@ -101,8 +101,8 @@ class MarkdownReporter:
 
         # Provider status table
         by_provider = self._group_by_provider(releases)
-        lines.append("| Provider | Releases | Breaking Changes | Status |")
-        lines.append("|----------|----------|-----------------|--------|")
+        lines.append("| Vendor | Releases This Week | Breaking Changes | Status |")
+        lines.append("|--------|-------------------|-----------------|--------|")
 
         for provider in PROVIDER_ORDER:
             provider_releases = by_provider.get(provider, [])
