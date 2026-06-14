@@ -15,7 +15,6 @@ on:
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
   check-releases:
@@ -64,26 +63,53 @@ jobs:
           Breaking changes: ${{ steps.tracker.outputs.breaking_count }}"
           git push
 
-      - name: Create issue for breaking changes
+      - name: Send report to Microsoft Teams
         if: steps.tracker.outputs.has_breaking_changes == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const reportPath = '${{ steps.tracker.outputs.report_path }}';
-            const report = fs.readFileSync(reportPath, 'utf8');
+        run: |
+          REPORT_URL="https://github.com/${{ github.repository }}/blob/main/reports/${{ steps.tracker.outputs.report_filename }}"
 
-            // Extract just the breaking changes section
-            const breakingSection = report.split('## Breaking Changes & Deprecations')[1]?.split('## Other Releases')[0] || 'See full report.';
-
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `⚠️ Breaking Changes Detected — ${new Date().toISOString().slice(0,10)}`,
-              body: `## Breaking Changes Found\n\n${breakingSection}\n\n---\n📄 Full report: [${process.env.REPORT_FILENAME}](reports/${process.env.REPORT_FILENAME})`,
-            });
-        env:
-          REPORT_FILENAME: ${{ steps.tracker.outputs.report_filename }}
+          curl -H "Content-Type: application/json" -d '{
+            "type": "message",
+            "attachments": [
+              {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.4",
+                  "body": [
+                    {
+                      "type": "TextBlock",
+                      "size": "Large",
+                      "weight": "Bolder",
+                      "text": "⚠️ K8s Breaking Changes Detected",
+                      "style": "heading"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "The K8s Release Tracker found **${{ steps.tracker.outputs.breaking_count }} breaking change(s)** across ${{ steps.tracker.outputs.total_count }} total releases that may impact Qualys sensor.",
+                      "wrap": true
+                    },
+                    {
+                      "type": "FactSet",
+                      "facts": [
+                        { "title": "Total Releases:", "value": "${{ steps.tracker.outputs.total_count }}" },
+                        { "title": "Breaking Changes:", "value": "${{ steps.tracker.outputs.breaking_count }}" },
+                        { "title": "Report Date:", "value": "${{ steps.tracker.outputs.report_filename }}" }
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": "Action.OpenUrl",
+                      "title": "View Full Report",
+                      "url": "'"$REPORT_URL"'"
+                    }
+                  ]
+                }
+              }
+            ]
+          }' "${{ secrets.TEAMS_WEBHOOK_URL }}"
 
       - name: Summary
         run: |
