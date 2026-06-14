@@ -1,17 +1,19 @@
-# Kubernetes Ecosystem — Weekly Release Report
-**Report Period:** Last 30 days (generated June 14, 2026 at 07:09 UTC)
+# Kubernetes Ecosystem — Weekly Releases by Vendor
+**Report Period:** Last 30 days (generated June 14, 2026 at 07:30 UTC)
 
-## Quick Summary
+## Weekly Release Summary by Vendor
 
-> **6 breaking change(s) detected** across 21 total releases. Review the sections below for details.
+> **13 breaking change(s) detected** across 21 total releases. Review the sections below for details.
+>
+> **Qualys Sensor Impact:** 8 release(s) contain changes that may affect sensor connectivity (token/auth, kubeapi, runtime, DaemonSet).
 
-| Provider | Releases | Breaking Changes | Status |
-|----------|----------|-----------------|--------|
+| Vendor | Releases This Week | Breaking Changes | Status |
+|--------|-------------------|-----------------|--------|
 | Kubernetes (Upstream) | 5 | 0 | OK |
-| Amazon EKS | 4 | 0 | OK |
-| Azure AKS | 1 | 1 | **Action needed** |
+| Amazon EKS | 4 | 2 (Sensor: 2) | **Action needed** |
+| Azure AKS | 1 | 1 (Sensor: 1) | **Action needed** |
 | Google GKE | 6 | 5 | **Action needed** |
-| Red Hat OpenShift | 5 | 0 | OK |
+| Red Hat OpenShift | 5 | 5 (Sensor: 5) | **Action needed** |
 
 ---
 
@@ -33,14 +35,30 @@
 
 ## Amazon EKS
 
-**No breaking changes in this period.**
+### Breaking Changes / Deprecations (2)
 
-### Releases (4)
+#### 🔴 v1.21.2
+
+- **Date:** 2026-05-21
+- **Severity:** CRITICAL
+- **Component:** EKS (amazon-vpc-cni-k8s)
+- **Details:** [View full release notes](https://github.com/aws/amazon-vpc-cni-k8s/releases/tag/v1.21.2)
+- **What to watch for:** CRI, DaemonSet, CNI, VPC CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — DaemonSet, CRI
+
+#### 🔴 v1.22.1
+
+- **Date:** 2026-05-29
+- **Severity:** CRITICAL
+- **Component:** EKS (amazon-vpc-cni-k8s)
+- **Details:** [View full release notes](https://github.com/aws/amazon-vpc-cni-k8s/releases/tag/v1.22.1)
+- **What to watch for:** CRI, DaemonSet, CNI, VPC CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — DaemonSet, CRI
+
+### Releases (2)
 
 | Version | Release Date | Title | Link |
 |---------|-------------|-------|------|
-| v1.21.2 | 2026-05-21 | — | [View](https://github.com/aws/amazon-vpc-cni-k8s/releases/tag/v1.21.2) |
-| v1.22.1 | 2026-05-29 | — | [View](https://github.com/aws/amazon-vpc-cni-k8s/releases/tag/v1.22.1) |
 | weekly.2026-05-21 | 2026-05-21 | Weekly Release 2026-05-21 | [View](https://github.com/aws/eks-anywhere/releases/tag/weekly.2026-05-21) |
 | weekly.2026-06-04 | 2026-06-04 | Weekly Release 2026-06-04 | [View](https://github.com/aws/eks-anywhere/releases/tag/weekly.2026-06-04) |
 
@@ -56,7 +74,8 @@
 - **Severity:** CRITICAL
 - **Component:** AKS
 - **Details:** [View full release notes](https://github.com/Azure/AKS/releases/tag/2026-05-29)
-- **What to watch for:** removed, deprecated, deprecation, must migrate
+- **What to watch for:** removed, deprecated, deprecation, must migrate, TokenReview, Unauthorized, TLS, pod security, CRI, CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — Unauthorized, CRI
 
 ---
 
@@ -114,17 +133,52 @@
 
 ## Red Hat OpenShift
 
-**No breaking changes in this period.**
+### Breaking Changes / Deprecations (5)
 
-### Releases (5)
+#### 🔴 5.0.0-okd-scos.ec.0
 
-| Version | Release Date | Title | Link |
-|---------|-------------|-------|------|
-| 4.22.0-okd-scos.1 | 2026-05-28 | — | [View](https://github.com/okd-project/okd/releases/tag/4.22.0-okd-scos.1) |
-| 5.0.0-okd-scos.ec.0 | 2026-05-28 | — | [View](https://github.com/okd-project/okd/releases/tag/5.0.0-okd-scos.ec.0) |
-| 4.22.0-okd-scos.2 | 2026-06-02 | — | [View](https://github.com/okd-project/okd/releases/tag/4.22.0-okd-scos.2) |
-| 5.0.0-okd-scos.ec.1 | 2026-06-11 | — | [View](https://github.com/okd-project/okd/releases/tag/5.0.0-okd-scos.ec.1) |
-| 4.22.0-okd-scos.3 | 2026-06-11 | — | [View](https://github.com/okd-project/okd/releases/tag/4.22.0-okd-scos.3) |
+- **Date:** 2026-05-28
+- **Severity:** CRITICAL
+- **Component:** OpenShift (okd)
+- **Details:** [View full release notes](https://github.com/okd-project/okd/releases/tag/5.0.0-okd-scos.ec.0)
+- **What to watch for:** authentication, 401, 403, kube-apiserver, RBAC, CoreDNS, kube-proxy, CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — 401, kube-apiserver
+
+#### 🔴 4.22.0-okd-scos.2
+
+- **Date:** 2026-06-02
+- **Severity:** CRITICAL
+- **Component:** OpenShift (okd)
+- **Details:** [View full release notes](https://github.com/okd-project/okd/releases/tag/4.22.0-okd-scos.2)
+- **What to watch for:** authentication, 401, 403, kube-apiserver, RBAC, CoreDNS, kube-proxy, CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — 401, kube-apiserver
+
+#### 🔴 5.0.0-okd-scos.ec.1
+
+- **Date:** 2026-06-11
+- **Severity:** CRITICAL
+- **Component:** OpenShift (okd)
+- **Details:** [View full release notes](https://github.com/okd-project/okd/releases/tag/5.0.0-okd-scos.ec.1)
+- **What to watch for:** authentication, 401, 403, kube-apiserver, RBAC, CoreDNS, kube-proxy, CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — 401, kube-apiserver
+
+#### 🔴 4.22.0-okd-scos.3
+
+- **Date:** 2026-06-11
+- **Severity:** CRITICAL
+- **Component:** OpenShift (okd)
+- **Details:** [View full release notes](https://github.com/okd-project/okd/releases/tag/4.22.0-okd-scos.3)
+- **What to watch for:** authentication, 401, 403, kube-apiserver, RBAC, CoreDNS, kube-proxy, CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — 401, kube-apiserver
+
+#### 🟠 4.22.0-okd-scos.1
+
+- **Date:** 2026-05-28
+- **Severity:** HIGH
+- **Component:** OpenShift (okd)
+- **Details:** [View full release notes](https://github.com/okd-project/okd/releases/tag/4.22.0-okd-scos.1)
+- **What to watch for:** authentication, 403, kube-apiserver, RBAC, CoreDNS, kube-proxy, CNI
+- **Qualys Sensor Impact:** This change may affect sensor connectivity — kube-apiserver
 
 ---
 

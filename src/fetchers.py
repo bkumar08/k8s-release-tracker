@@ -137,6 +137,33 @@ class EKSFetcher(ReleaseFetcher):
             except Exception as e:
                 logger.error(f"Failed to fetch {repo} releases: {e}")
 
+        # AWS What's New announcements (catches token, auth, platform changes)
+        announcements_rss = self.config.get("announcements_rss", "")
+        if announcements_rss:
+            try:
+                feed = feedparser.parse(announcements_rss)
+                for entry in feed.entries:
+                    title = entry.get("title", "")
+                    # Only include EKS-related announcements
+                    if not any(kw in title.lower() for kw in ["eks", "kubernetes", "amazon elastic kubernetes"]):
+                        continue
+                    published = entry.get("published", entry.get("updated", ""))
+                    if not _within_lookback(published, self.lookback_days):
+                        continue
+                    summary = entry.get("summary", "")
+                    summary = re.sub(r'<[^>]+>', '', summary)
+                    results.append({
+                        "source": "EKS",
+                        "version": "",
+                        "title": title,
+                        "date": published,
+                        "body": summary[:3000],
+                        "url": entry.get("link", ""),
+                        "prerelease": False,
+                    })
+            except Exception as e:
+                logger.error(f"Failed to fetch AWS announcements RSS: {e}")
+
         logger.info(f"EKS: found {len(results)} changes in last {self.lookback_days} days")
         return results
 

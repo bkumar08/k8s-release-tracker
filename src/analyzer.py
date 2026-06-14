@@ -16,6 +16,7 @@ class BreakingChangeAnalyzer:
     def __init__(self, config: dict):
         self.keywords = config.get("breaking_change_keywords", [])
         self.severity_keywords = config.get("severity_keywords", {})
+        self.sensor_impact_keywords = config.get("sensor_impact_keywords", [])
 
     def analyze(self, releases: List[Dict]) -> List[Dict]:
         """
@@ -58,10 +59,18 @@ class BreakingChangeAnalyzer:
         # Determine severity
         severity = self._classify_severity(combined)
 
+        # Check for sensor impact keywords
+        sensor_impact = []
+        for keyword in self.sensor_impact_keywords:
+            if keyword.lower() in combined:
+                sensor_impact.append(keyword)
+
         result["has_breaking_changes"] = len(matched_keywords) > 0
         result["matched_keywords"] = matched_keywords
         result["breaking_sections"] = breaking_sections
         result["severity"] = severity
+        result["has_sensor_impact"] = len(sensor_impact) > 0
+        result["sensor_impact_keywords"] = sensor_impact
 
         return result
 

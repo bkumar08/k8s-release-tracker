@@ -1,5 +1,6 @@
 # K8s Release Tracker Configuration
 # Customize sources, keywords, and notification settings
+# Tracks changes that could impact Qualys CRS sensor and kubeapi connectivity
 
 schedule:
   # How far back to look for changes (in days)
@@ -15,7 +16,9 @@ sources:
   eks:
     enabled: true
     github_repo: "awsdocs/amazon-eks-user-guide"
-    # changelog_url not used - EKS changes tracked via GitHub releases of EKS components
+    # AWS EKS announcements and what's new feed
+    announcements_rss: "https://aws.amazon.com/about-aws/whats-new/recent/feed/"
+    # EKS-specific repos tracked in fetchers.py
 
   aks:
     enabled: true
@@ -34,6 +37,7 @@ sources:
 
 # Keywords that indicate breaking changes
 breaking_change_keywords:
+  # General breaking changes
   - "breaking change"
   - "breaking"
   - "removed"
@@ -54,6 +58,77 @@ breaking_change_keywords:
   - "removed API"
   - "upgrade notes"
   - "urgent upgrade notes"
+  # Authentication / Token / KubeAPI changes
+  - "token expiration"
+  - "token lifetime"
+  - "token rotation"
+  - "service account token"
+  - "bound service account"
+  - "TokenRequest"
+  - "TokenReview"
+  - "authentication"
+  - "401"
+  - "403"
+  - "Unauthorized"
+  - "kube-apiserver"
+  - "kubeapi"
+  - "OIDC"
+  - "webhook authentication"
+  - "client certificate"
+  - "certificate rotation"
+  - "cert expir"
+  - "TLS"
+  # RBAC / Authorization changes
+  - "RBAC"
+  - "ClusterRole"
+  - "ServiceAccount"
+  - "pod security"
+  - "PodSecurityPolicy"
+  - "pod security admission"
+  - "security context"
+  # Runtime / Container changes (affects sensors)
+  - "container runtime"
+  - "containerd"
+  - "CRI"
+  - "cgroup"
+  - "cgroupv2"
+  - "seccomp"
+  - "AppArmor"
+  - "eBPF"
+  - "DaemonSet"
+  - "hostPID"
+  - "hostNetwork"
+  - "privileged"
+  # Networking changes
+  - "CoreDNS"
+  - "kube-proxy"
+  - "network policy"
+  - "CNI"
+  - "VPC CNI"
+
+# Keywords specific to Qualys sensor impact
+# These get flagged with a special "Sensor Impact" tag in the report
+sensor_impact_keywords:
+  - "token expiration"
+  - "token lifetime"
+  - "token rotation"
+  - "service account token"
+  - "bound service account"
+  - "401"
+  - "Unauthorized"
+  - "kube-apiserver"
+  - "certificate rotation"
+  - "DaemonSet"
+  - "hostPID"
+  - "hostNetwork"
+  - "privileged"
+  - "container runtime"
+  - "containerd"
+  - "CRI"
+  - "eBPF"
+  - "seccomp"
+  - "cgroup"
+  - "pod security admission"
 
 # Severity classification keywords
 severity_keywords:
@@ -63,15 +138,26 @@ severity_keywords:
     - "vulnerability"
     - "critical"
     - "urgent"
+    - "401"
+    - "Unauthorized"
+    - "token expiration"
+    - "certificate expir"
   high:
     - "breaking change"
     - "removed"
     - "action required"
     - "API removal"
+    - "kube-apiserver"
+    - "authentication"
+    - "RBAC"
+    - "service account token"
   medium:
     - "deprecated"
     - "deprecation"
     - "will be removed"
+    - "token rotation"
+    - "container runtime"
+    - "DaemonSet"
   low:
     - "upgrade notes"
     - "migration"

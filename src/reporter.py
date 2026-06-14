@@ -92,10 +92,16 @@ class MarkdownReporter:
         lines.append("## Weekly Release Summary by Vendor")
         lines.append("")
 
+        sensor_impact = [r for r in releases if r.get("has_sensor_impact")]
+
         if breaking:
             lines.append(f"> **{len(breaking)} breaking change(s) detected** across {total} total releases. Review the sections below for details.")
         else:
             lines.append(f"> **No breaking changes detected.** {total} release(s) found in this period.")
+
+        if sensor_impact:
+            lines.append(f">")
+            lines.append(f"> **Qualys Sensor Impact:** {len(sensor_impact)} release(s) contain changes that may affect sensor connectivity (token/auth, kubeapi, runtime, DaemonSet).")
 
         lines.append("")
 
@@ -116,7 +122,9 @@ class MarkdownReporter:
             else:
                 status = "OK"
 
-            lines.append(f"| {provider} | {count} | {breaking_count} | {status} |")
+            sensor_count = sum(1 for r in provider_releases if r.get("has_sensor_impact"))
+            sensor_flag = f" (Sensor: {sensor_count})" if sensor_count > 0 else ""
+            lines.append(f"| {provider} | {count} | {breaking_count}{sensor_flag} | {status} |")
 
         lines.append("")
         return "\n".join(lines)
@@ -208,6 +216,12 @@ class MarkdownReporter:
         keywords = release.get("matched_keywords", [])
         if keywords:
             lines.append(f"- **What to watch for:** {', '.join(keywords)}")
+
+        # Sensor impact warning
+        sensor_keywords = release.get("sensor_impact_keywords", [])
+        if sensor_keywords:
+            lines.append(f"- **Qualys Sensor Impact:** This change may affect sensor connectivity — {', '.join(sensor_keywords)}")
+
 
         # Breaking change details
         sections = release.get("breaking_sections", [])
