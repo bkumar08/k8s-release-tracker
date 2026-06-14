@@ -1,5 +1,5 @@
 # Kubernetes Ecosystem — Weekly Releases by Vendor
-**Report Period:** Last 7 days (generated June 14, 2026 at 07:34 UTC)
+**Report Period:** Last 7 days (generated June 14, 2026 at 10:45 UTC)
 
 ## Weekly Release Summary by Vendor
 
