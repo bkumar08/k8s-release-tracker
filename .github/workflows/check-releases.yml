@@ -1,0 +1,94 @@
+name: K8s Release Tracker
+
+on:
+  # Run daily at 8:00 AM UTC
+  schedule:
+    - cron: '0 8 * * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      lookback_days:
+        description: 'Number of days to look back for changes'
+        required: false
+        default: '7'
+
+permissions:
+  contents: write
+
+jobs:
+  check-releases:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run release tracker
+        id: tracker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LOOKBACK_DAYS: ${{ github.event.inputs.lookback_days || '7' }}
+        run: python -m src.main
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git add reports/
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push report
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "k8s-release-tracker[bot]"
+          git config user.email "k8s-release-tracker[bot]@users.noreply.github.com"
+          git add reports/
+          git commit -m "chore: auto-update release report (${{ steps.tracker.outputs.report_filename }})
+
+          Total releases: ${{ steps.tracker.outputs.total_count }}
+          Breaking changes: ${{ steps.tracker.outputs.breaking_count }}"
+          git push
+
+      - name: Create issue for breaking changes
+        if: steps.tracker.outputs.has_breaking_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = '${{ steps.tracker.outputs.report_path }}';
+            const report = fs.readFileSync(reportPath, 'utf8');
+
+            // Extract just the breaking changes section
+            const breakingSection = report.split('## Breaking Changes & Deprecations')[1]?.split('## Other Releases')[0] || 'See full report.';
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Breaking Changes Detected — ${new Date().toISOString().slice(0,10)}`,
+              body: `## Breaking Changes Found\n\n${breakingSection}\n\n---\n📄 Full report: [${process.env.REPORT_FILENAME}](reports/${process.env.REPORT_FILENAME})`,
+              labels: ['breaking-change', 'automated']
+            });
+        env:
+          REPORT_FILENAME: ${{ steps.tracker.outputs.report_filename }}
+
+      - name: Summary
+        run: |
+          echo "## K8s Release Tracker Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total releases:** ${{ steps.tracker.outputs.total_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Breaking changes:** ${{ steps.tracker.outputs.breaking_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Report:** reports/${{ steps.tracker.outputs.report_filename }}" >> $GITHUB_STEP_SUMMARY

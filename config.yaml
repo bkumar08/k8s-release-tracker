@@ -1,0 +1,77 @@
+# K8s Release Tracker Configuration
+# Customize sources, keywords, and notification settings
+
+schedule:
+  # How far back to look for changes (in days)
+  lookback_days: 7
+
+sources:
+  kubernetes:
+    enabled: true
+    github_repo: "kubernetes/kubernetes"
+    # Track these release streams (empty = all)
+    track_versions: []
+
+  eks:
+    enabled: true
+    github_repo: "awsdocs/amazon-eks-user-guide"
+    changelog_url: "https://raw.githubusercontent.com/awsdocs/amazon-eks-user-guide/main/doc_source/document-history.md"
+
+  aks:
+    enabled: true
+    github_repo: "Azure/AKS"
+    release_notes_url: "https://raw.githubusercontent.com/Azure/AKS/master/CHANGELOG.md"
+
+  gke:
+    enabled: true
+    release_notes_url: "https://cloud.google.com/feeds/kubernetes-engine-release-notes.xml"
+
+  openshift:
+    enabled: true
+    github_repo: "openshift/origin"
+    # OCP errata/release notes
+    release_notes_url: "https://raw.githubusercontent.com/openshift/openshift-docs/main/release_notes/ocp-4-latest-release-notes.adoc"
+
+# Keywords that indicate breaking changes
+breaking_change_keywords:
+  - "breaking change"
+  - "breaking"
+  - "removed"
+  - "deprecated"
+  - "deprecation"
+  - "no longer supported"
+  - "backwards incompatible"
+  - "backward incompatible"
+  - "migration required"
+  - "action required"
+  - "ACTION REQUIRED"
+  - "removed in"
+  - "will be removed"
+  - "no longer available"
+  - "must migrate"
+  - "API removal"
+  - "api removal"
+  - "removed API"
+  - "upgrade notes"
+  - "urgent upgrade notes"
+
+# Severity classification keywords
+severity_keywords:
+  critical:
+    - "security"
+    - "CVE-"
+    - "vulnerability"
+    - "critical"
+    - "urgent"
+  high:
+    - "breaking change"
+    - "removed"
+    - "action required"
+    - "API removal"
+  medium:
+    - "deprecated"
+    - "deprecation"
+    - "will be removed"
+  low:
+    - "upgrade notes"
+    - "migration"
