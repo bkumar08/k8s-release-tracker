@@ -27,14 +27,14 @@ Automatically tracks breaking changes across the Kubernetes ecosystem and pushes
 
 ```bash
 # Clone this project
-git clone https://github.com/YOUR_USERNAME/k8s-release-tracker.git
+git clone https://github.com/bkumar08/k8s-release-tracker.git
 cd k8s-release-tracker
 
 # Or push this folder as a new repo
 git init
 git add .
 git commit -m "Initial commit: K8s Release Tracker"
-git remote add origin https://github.com/YOUR_USERNAME/k8s-release-tracker.git
+git remote add origin https://github.com/bkumar08/k8s-release-tracker.git
 git push -u origin main
 ```
 
