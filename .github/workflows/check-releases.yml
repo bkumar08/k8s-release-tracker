@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   check-releases:
@@ -80,7 +81,6 @@ jobs:
               repo: context.repo.repo,
               title: `⚠️ Breaking Changes Detected — ${new Date().toISOString().slice(0,10)}`,
               body: `## Breaking Changes Found\n\n${breakingSection}\n\n---\n📄 Full report: [${process.env.REPORT_FILENAME}](reports/${process.env.REPORT_FILENAME})`,
-              labels: ['breaking-change', 'automated']
             });
         env:
           REPORT_FILENAME: ${{ steps.tracker.outputs.report_filename }}
