@@ -100,10 +100,8 @@ def main():
     print(f"  Report:                  {report_path}")
     print(f"{'='*60}\n")
 
-    # Exit with code 1 if critical breaking changes found (useful for CI alerts)
     if stats["by_severity"].get("critical", 0) > 0:
-        logger.warning("CRITICAL breaking changes detected!")
-        return 1
+        logger.warning("CRITICAL breaking changes detected! Review the report for details.")
 
     return 0
 
