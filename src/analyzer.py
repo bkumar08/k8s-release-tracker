@@ -100,11 +100,12 @@ class BreakingChangeAnalyzer:
         return "info"
 
 
-def get_summary_stats(analyzed_releases: List[Dict]) -> Dict:
+def get_summary_stats(analyzed_releases: List[Dict], lookback_days: int = 7) -> Dict:
     """Generate summary statistics from analyzed releases."""
     stats = {
         "total_releases": len(analyzed_releases),
         "breaking_changes": 0,
+        "lookback_days": lookback_days,
         "by_source": {},
         "by_severity": {"critical": 0, "high": 0, "medium": 0, "low": 0, "info": 0},
     }

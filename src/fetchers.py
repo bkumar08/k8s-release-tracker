@@ -101,6 +101,8 @@ class EKSFetcher(ReleaseFetcher):
         eks_repos = [
             "aws/amazon-vpc-cni-k8s",
             "aws/aws-node-termination-handler",
+            "aws/eks-anywhere",
+            "aws/eks-distro",
         ]
 
         # Primary: EKS doc history

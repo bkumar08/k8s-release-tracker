@@ -59,7 +59,7 @@ def main():
     analyzed = analyzer.analyze(releases)
 
     # Step 3: Generate statistics
-    stats = get_summary_stats(analyzed)
+    stats = get_summary_stats(analyzed, lookback)
     breaking_count = stats["breaking_changes"]
     logger.info(f"Found {breaking_count} releases with breaking changes out of {len(analyzed)} total")
 
